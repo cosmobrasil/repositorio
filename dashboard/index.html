@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard do Acervo | ANÁLISE RELATORIO</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --bg-2: #e7dcc8;
+        --ink: #142126;
+        --muted: #5b6b74;
+        --line: rgba(20, 33, 38, 0.12);
+        --card: rgba(255, 251, 244, 0.74);
+        --card-strong: #fffaf2;
+        --forest: #123f38;
+        --teal: #2d6f68;
+        --gold: #c28a2d;
+        --sand: #f2d8a1;
+        --coral: #c86b54;
+        --shadow: 0 24px 60px rgba(20, 33, 38, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top left, rgba(194, 138, 45, 0.18), transparent 34%),
+          radial-gradient(circle at 85% 15%, rgba(18, 63, 56, 0.18), transparent 28%),
+          linear-gradient(180deg, var(--bg) 0%, #f8f4ec 100%);
+        color: var(--ink);
+        font-family: "Avenir Next", "Segoe UI", "Trebuchet MS", sans-serif;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(20, 33, 38, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(20, 33, 38, 0.04) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent 90%);
+        z-index: 0;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 1;
+        width: min(1440px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 28px 0 40px;
+      }
+
+      .page-header {
+        text-align: center;
+        padding: 6px 0 22px;
+      }
+
+      .page-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        line-height: 1;
+        letter-spacing: -0.05em;
+        font-weight: 800;
+        color: var(--forest);
+        text-transform: uppercase;
+      }
+
+      .page-subtitle {
+        margin: 10px 0 0;
+        font-size: 0.95rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.35fr 0.95fr;
+        gap: 20px;
+        align-items: stretch;
+        margin-bottom: 20px;
+      }
+
+      .hero-main,
+      .hero-side,
+      .panel,
+      .metric,
+      .sector-card,
+      .quote {
+        border: 1px solid var(--line);
+        background: var(--card);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-main {
+        border-radius: 28px;
+        padding: 28px;
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-main::after {
+        content: "";
+        position: absolute;
+        inset: auto -10% -45% auto;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(194, 138, 45, 0.24), rgba(194, 138, 45, 0) 68%);
+        pointer-events: none;
+      }
+
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(18, 63, 56, 0.08);
+        color: var(--forest);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .kicker-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 0 6px rgba(194, 138, 45, 0.16);
+      }
+
+      .hero-title {
+        margin: 16px 0 12px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2.6rem, 5vw, 5.2rem);
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+        max-width: 12ch;
+      }
+
+      .hero-copy {
+        max-width: 62ch;
+        font-size: 1.02rem;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(20, 33, 38, 0.08);
+        color: var(--ink);
+        font-size: 0.9rem;
+        font-weight: 650;
+      }
+
+      .hero-side {
+        border-radius: 28px;
+        padding: 24px;
+        display: grid;
+        gap: 14px;
+        align-content: start;
+      }
+
+      .side-heading {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.5rem;
+        margin: 0 0 4px;
+      }
+
+      .side-lead {
+        margin: 0 0 8px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .quote {
+        border-radius: 20px;
+        padding: 16px 18px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .quote strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--forest);
+      }
+
+      .quote span {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin: 14px 0 20px;
+      }
+
+      .metric {
+        border-radius: 22px;
+        padding: 20px;
+        min-height: 136px;
+        background: linear-gradient(180deg, rgba(255, 251, 244, 0.9), rgba(255, 248, 236, 0.72));
+      }
+
+      .metric .label {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.74rem;
+        font-weight: 700;
+      }
+
+      .metric .value {
+        margin-top: 12px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 3.4vw, 3.2rem);
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--forest);
+      }
+
+      .metric .detail {
+        margin-top: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+        font-size: 0.96rem;
+      }
+
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .chart-card {
+        border: 1px solid var(--line);
+        background: var(--card);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        border-radius: 26px;
+        padding: 20px;
+      }
+
+      .chart-card.wide {
+        grid-column: span 2;
+      }
+
+      .chart-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .chart-head h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.35rem;
+        letter-spacing: -0.03em;
+      }
+
+      .chart-head p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      .chip-note {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(18, 63, 56, 0.08);
+        color: var(--forest);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .donut-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .donut {
+        width: 220px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        position: relative;
+        margin: 0 auto;
+        background: conic-gradient(from -90deg, var(--forest) 0 3.3%, var(--teal) 3.3% 20%, var(--gold) 20% 53.3%, var(--coral) 53.3% 66.6%, #d8b06a 66.6% 76.6%, #8ea78f 76.6% 100%);
+        box-shadow: inset 0 0 0 1px rgba(20, 33, 38, 0.08);
+      }
+
+      .donut::after {
+        content: "";
+        position: absolute;
+        inset: 28px;
+        border-radius: 50%;
+        background: var(--card-strong);
+        box-shadow: inset 0 0 0 1px rgba(20, 33, 38, 0.05);
+      }
+
+      .donut-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .donut-center strong {
+        display: block;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 2.5rem;
+        line-height: 1;
+        color: var(--forest);
+      }
+
+      .donut-center span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+      }
+
+      .legend-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .legend-row {
+        display: grid;
+        grid-template-columns: 14px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(20, 33, 38, 0.06);
+      }
+
+      .legend-swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        box-shadow: 0 0 0 4px rgba(20, 33, 38, 0.04);
+      }
+
+      .legend-row strong {
+        display: block;
+        font-size: 0.92rem;
+      }
+
+      .legend-row span {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .gauge-wrap {
+        display: grid;
+        place-items: center;
+        gap: 12px;
+      }
+
+      .gauge {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .gauge svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .gauge-center {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 2.2rem;
+        fill: var(--forest);
+      }
+
+      .gauge-label {
+        fill: var(--muted);
+        font-size: 0.86rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      .gauge-caption {
+        text-align: center;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      .map-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(230px, 0.8fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .map-shell {
+        border-radius: 22px;
+        background:
+          radial-gradient(circle at 22% 20%, rgba(194, 138, 45, 0.14), transparent 26%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(242, 216, 161, 0.16));
+        border: 1px solid rgba(20, 33, 38, 0.08);
+        padding: 12px;
+      }
+
+      .geo-map {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
+        display: block;
+      }
+
+      .map-region {
+        stroke: rgba(20, 33, 38, 0.18);
+        stroke-width: 1.2;
+      }
+
+      .map-region text {
+        font-weight: 800;
+        font-size: 12px;
+        fill: var(--ink);
+      }
+
+      .map-side {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+
+      .region-card {
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(20, 33, 38, 0.08);
+      }
+
+      .region-card .topline {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .region-card strong {
+        font-size: 0.95rem;
+      }
+
+      .region-card em {
+        font-style: normal;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .region-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(20, 33, 38, 0.08);
+        overflow: hidden;
+      }
+
+      .region-bar > i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--forest), var(--teal), var(--gold));
+      }
+
+      .bar-chart {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .bar-item {
+        display: grid;
+        grid-template-columns: 190px 1fr 54px;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .bar-name {
+        font-weight: 750;
+      }
+
+      .bar-track {
+        height: 16px;
+        border-radius: 999px;
+        background: rgba(20, 33, 38, 0.08);
+        overflow: hidden;
+      }
+
+      .bar-track > i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--forest), var(--teal), var(--gold));
+      }
+
+      .bar-value {
+        text-align: right;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .panel {
+        border-radius: 26px;
+        padding: 22px;
+      }
+
+      .panel h2 {
+        margin: 0 0 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.55rem;
+        letter-spacing: -0.03em;
+      }
+
+      .panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .year-row {
+        display: grid;
+        grid-template-columns: 72px 1fr 52px;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .year {
+        font-weight: 800;
+        color: var(--forest);
+      }
+
+      .bar {
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(20, 33, 38, 0.08);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .bar > i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--forest), var(--teal), var(--gold));
+      }
+
+      .count {
+        text-align: right;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .sector-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .sector-btn {
+        appearance: none;
+        border: 1px solid rgba(20, 33, 38, 0.12);
+        background: rgba(255, 255, 255, 0.76);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      }
+
+      .sector-btn:hover,
+      .sector-btn[aria-pressed="true"] {
+        transform: translateY(-1px);
+        background: rgba(18, 63, 56, 0.08);
+        border-color: rgba(18, 63, 56, 0.22);
+      }
+
+      .sector-hero {
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, rgba(18, 63, 56, 0.08), rgba(255, 255, 255, 0.72));
+        border: 1px solid rgba(18, 63, 56, 0.1);
+      }
+
+      .sector-hero-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: start;
+        margin-bottom: 12px;
+      }
+
+      .sector-hero h3 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.7rem;
+        letter-spacing: -0.03em;
+      }
+
+      .sector-hero .meta {
+        color: var(--muted);
+        font-size: 0.94rem;
+        margin-top: 4px;
+      }
+
+      .sector-badge {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(194, 138, 45, 0.12);
+        color: #7c5311;
+        font-weight: 800;
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .sector-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .mini {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(20, 33, 38, 0.08);
+      }
+
+      .mini .mini-label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      .mini ul {
+        margin: 0;
+        padding-left: 18px;
+        line-height: 1.55;
+        color: var(--ink);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .sector-card {
+        border-radius: 24px;
+        padding: 20px;
+        background: linear-gradient(180deg, rgba(255, 251, 244, 0.92), rgba(255, 248, 236, 0.74));
+      }
+
+      .sector-card h4 {
+        margin: 0 0 10px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.35rem;
+      }
+
+      .sector-card .line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+      }
+
+      .sector-card ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        line-height: 1.55;
+      }
+
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .footnote {
+        border-radius: 22px;
+        padding: 18px 20px;
+        background: rgba(18, 63, 56, 0.06);
+        border: 1px solid rgba(18, 63, 56, 0.1);
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .footnote strong {
+        display: block;
+        color: var(--forest);
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 1120px) {
+        .hero,
+        .grid-2,
+        .footer,
+        .metrics,
+        .analytics-grid,
+        .cards,
+        .sector-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-card.wide {
+          grid-column: auto;
+        }
+
+        .donut-layout,
+        .map-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .wrap {
+          width: min(100vw - 18px, 100%);
+          padding-top: 10px;
+        }
+
+        .page-header {
+          padding-bottom: 16px;
+        }
+
+        .hero-main,
+        .hero-side,
+        .panel,
+        .metric,
+        .sector-card,
+        .footnote {
+          border-radius: 18px;
+          padding: 16px;
+        }
+
+        .year-row {
+          grid-template-columns: 56px 1fr 40px;
+        }
+
+        .hero-title {
+          font-size: clamp(2.1rem, 12vw, 3.8rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="page-header" aria-label="Cabecalho principal">
+        <h1 class="page-title">INTELIGÊNCIA TERRITORIAL ESTRATÉGICA</h1>
+        <p class="page-subtitle">CONECT</p>
+      </header>
+
+      <section class="hero">
+        <div class="hero-main">
+          <div>
+            <div class="kicker"><span class="kicker-dot"></span>Primeiro dashboard do acervo</div>
+            <h2 class="hero-title">Inteligência consultiva em 30 relatórios.</h2>
+            <p class="hero-copy">
+              Este painel resume o acervo de 2020 a 2025 e já conecta os principais eixos do trabalho:
+              relatórios, matrizes tecnológicas, setores recorrentes, territórios, temas e prioridades
+              de decisão. A leitura aqui é executiva, mas já aponta para navegação analítica.
+            </p>
+          </div>
+          <div class="hero-meta">
+            <span class="pill">Foresight</span>
+            <span class="pill">Matrizes tecnológicas</span>
+            <span class="pill">Cadeias produtivas</span>
+            <span class="pill">Governança territorial</span>
+            <span class="pill">Economia circular</span>
+          </div>
+        </div>
+        <aside class="hero-side">
+          <div>
+            <p class="side-heading">Leitura rápida</p>
+            <p class="side-lead">
+              O dashboard parte da camada mais forte já construída: matrizes, síntese transversal e
+              índice mestre de setores.
+            </p>
+          </div>
+          <div class="quote">
+            <strong>O que ele já entrega</strong>
+            <span>
+              visão de volume, evolução por ano, setores dominantes, prioridades tecnológicas e uma
+              primeira ponte entre análise e consulta operacional.
+            </span>
+          </div>
+          <div class="quote">
+            <strong>O que vem depois</strong>
+            <span>
+              filtros reais por setor, território e ano, além de uma visão em rede com as fichas e
+              matrizes cruzadas.
+            </span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="metrics" aria-label="Indicadores principais">
+        <div class="metric">
+          <div class="label">Relatórios processados</div>
+          <div class="value">30</div>
+          <div class="detail">Acervo consolidado entre 2020 e 2025.</div>
+        </div>
+        <div class="metric">
+          <div class="label">Anos cobertos</div>
+          <div class="value">6</div>
+          <div class="detail">Do primeiro relatório de 2020 ao bloco de 2025.</div>
+        </div>
+        <div class="metric">
+          <div class="label">Matrizes tecnológicas</div>
+          <div class="value">9</div>
+          <div class="detail">Camada analítica já extraída e comparável.</div>
+        </div>
+        <div class="metric">
+          <div class="label">Setores recorrentes</div>
+          <div class="value">6</div>
+          <div class="detail">Construção civil, madeira e móveis, metalmecânica, moda, alimentos e náutico.</div>
+        </div>
+      </section>
+
+      <section class="analytics-grid" aria-label="Graficos complementares">
+        <article class="chart-card wide">
+          <div class="chart-head">
+            <div>
+              <h2>Volume por ano</h2>
+              <p>Donut com a distribuição do acervo e a leitura da concentração temporal do trabalho.</p>
+            </div>
+            <div class="chip-note">Distribuição temporal</div>
+          </div>
+          <div class="donut-layout">
+            <div class="donut" id="year-donut" aria-label="Grafico de donut por ano">
+              <div class="donut-center">
+                <strong>30</strong>
+                <span>relatórios</span>
+              </div>
+            </div>
+            <div class="legend-list" id="year-legend"></div>
+          </div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-head">
+            <div>
+              <h2>Medidor de maturidade</h2>
+              <p>Percentual da camada analítica já estruturada em matrizes tecnológicas.</p>
+            </div>
+            <div class="chip-note">Gauge</div>
+          </div>
+          <div class="gauge-wrap">
+            <div class="gauge" id="maturity-gauge" aria-label="Medidor de maturidade analitica"></div>
+            <div class="gauge-caption">
+              9 de 30 relatórios possuem matriz tecnológica consolidada, indicando 30% de cobertura da camada analítica.
+            </div>
+          </div>
+        </article>
+
+        <article class="chart-card wide">
+          <div class="chart-head">
+            <div>
+              <h2>Mapa geografico do acervo</h2>
+              <p>Leitura territorial em macro-regioes, com destaque para a concentracao no Sul e para os polos inferidos.</p>
+            </div>
+            <div class="chip-note">Mapa</div>
+          </div>
+          <div class="map-layout">
+            <div class="map-shell">
+              <svg class="geo-map" id="geo-map" viewBox="0 0 640 420" role="img" aria-label="Mapa geografico simplificado do acervo"></svg>
+            </div>
+            <div class="map-side" id="territory-legend"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid-2">
+        <div class="panel">
+          <h2>Linha do tempo do acervo</h2>
+          <p>
+            A evolução mostra a passagem de inovação territorial para gestão tecnológica futura e,
+            por fim, mapas estratégicos com fatores empresariais, setoriais e sistêmicos.
+          </p>
+          <div class="timeline" aria-label="Distribuição por ano">
+            <div class="year-row"><div class="year">2020</div><div class="bar"><i style="width: 10%; background: linear-gradient(90deg, var(--coral), var(--gold));"></i></div><div class="count">1</div></div>
+            <div class="year-row"><div class="year">2021</div><div class="bar"><i style="width: 36%; background: linear-gradient(90deg, var(--coral), var(--gold));"></i></div><div class="count">5</div></div>
+            <div class="year-row"><div class="year">2022</div><div class="bar"><i style="width: 72%;"></i></div><div class="count">10</div></div>
+            <div class="year-row"><div class="year">2023</div><div class="bar"><i style="width: 30%; background: linear-gradient(90deg, var(--teal), var(--gold));"></i></div><div class="count">4</div></div>
+            <div class="year-row"><div class="year">2024</div><div class="bar"><i style="width: 22%; background: linear-gradient(90deg, var(--forest), var(--teal));"></i></div><div class="count">3</div></div>
+            <div class="year-row"><div class="year">2025</div><div class="bar"><i style="width: 50%; background: linear-gradient(90deg, var(--forest), var(--gold));"></i></div><div class="count">7</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Setores em destaque</h2>
+          <p>
+            Clique em um setor para ver o eixo dominante, as soluções centrais e os fatores de
+            priorização já consolidados no acervo.
+          </p>
+          <div class="sector-tabs" id="sector-tabs"></div>
+          <div class="sector-hero" id="sector-hero" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Ranking setorial por recorrencia</h2>
+        <p>
+          O gráfico abaixo ordena os setores do inventário por volume de ocorrências, destacando os
+          grupos que sustentam a leitura comparativa do acervo.
+        </p>
+        <div class="bar-chart" id="sector-bars"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Matriz comparativa das famílias mais fortes</h2>
+        <p>
+          Este bloco sintetiza os setores com matriz tecnológica já reconstruída. É a camada mais
+          útil para consulta de prioridades e desenho de próximos painéis.
+        </p>
+        <div class="cards">
+          <article class="sector-card">
+            <h4>Moda e confeccoes</h4>
+            <div class="line"><span>2023 -> 2025</span><span>smart factory / circularidade</span></div>
+            <ul>
+              <li>Prototipagem digital, 3D, VR/RA e canais de venda expandidos.</li>
+              <li>Rastreabilidade, upcycling, reparabilidade e design duravel.</li>
+              <li>Governanca territorial e valor sustentavel como eixo de reposicionamento.</li>
+            </ul>
+          </article>
+          <article class="sector-card">
+            <h4>Economia do mar</h4>
+            <div class="line"><span>2023</span><span>azul / agua / governanca</span></div>
+            <ul>
+              <li>P&D ambiental, tratamento de agua, BlueTech e disseminacao de boas praticas.</li>
+              <li>Literacia oceanica, planejamento espacial marinho e novos modelos de negocio.</li>
+              <li>Sustentabilidade como requisito de competitividade e regulacao.</li>
+            </ul>
+          </article>
+          <article class="sector-card">
+            <h4>Mobiliario</h4>
+            <div class="line"><span>2023</span><span>logistica / design / futuro</span></div>
+            <ul>
+              <li>Gestao de estoque, logistica, transporte e parcerias em rede.</li>
+              <li>Melhoria de design, processos e sustentabilidade operacional.</li>
+              <li>Formacao de futuro como suporte a produtividade e flexibilidade.</li>
+            </ul>
+          </article>
+          <article class="sector-card">
+            <h4>Construcao civil</h4>
+            <div class="line"><span>2025</span><span>descarbonizacao / BIM / circularidade</span></div>
+            <ul>
+              <li>BIM, digital twins, reuso de residuos e eficiencia energetica.</li>
+              <li>Materiais sustentaveis, modularizacao e industrializacao.</li>
+              <li>Gargalos de produtividade, regulacao e politicas publicas.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+      <script>
+      const yearData = [
+        { year: "2020", count: 1, color: "var(--forest)" },
+        { year: "2021", count: 5, color: "var(--teal)" },
+        { year: "2022", count: 10, color: "var(--gold)" },
+        { year: "2023", count: 4, color: "var(--coral)" },
+        { year: "2024", count: 3, color: "#d8b06a" },
+        { year: "2025", count: 7, color: "#8ea78f" },
+      ];
+
+      const territoryData = [
+        { name: "Sul", count: 15, note: "Curitiba, PR, SC e RS" },
+        { name: "Sudeste", count: 4, note: "MG e RJ" },
+        { name: "Nordeste", count: 2, note: "CE e PB" },
+        { name: "Norte", count: 1, note: "AP" },
+        { name: "Nacional", count: 1, note: "Brasil" },
+        { name: "Nao inferido", count: 7, note: "Territorios em aberto" },
+      ];
+
+      const sectorBars = [
+        { name: "Construcao civil", count: 6, note: "2021-2025" },
+        { name: "Madeira e moveis", count: 4, note: "2023-2025" },
+        { name: "Moda e confeccoes", count: 3, note: "2023-2025" },
+        { name: "Metalmecanica", count: 2, note: "base industrial" },
+        { name: "Alimentos", count: 2, note: "mercado e gestao" },
+        { name: "Nautico", count: 2, note: "mapas estrategicos" },
+        { name: "Setores unitarios", count: 11, note: "nodos exclusivos" },
+      ];
+
+      function pct(value, total) {
+        return `${Math.round((value / total) * 100)}%`;
+      }
+
+      function renderYearDonut() {
+        const total = yearData.reduce((sum, item) => sum + item.count, 0);
+        const donut = document.getElementById("year-donut");
+        const legend = document.getElementById("year-legend");
+        let cursor = -90;
+
+        donut.style.background = `conic-gradient(from -90deg, ${yearData
+          .map((item) => {
+            const angle = (item.count / total) * 360;
+            const start = cursor;
+            const end = cursor + angle;
+            cursor = end;
+            return `${item.color} ${start}deg ${end}deg`;
+          })
+          .join(", ")})`;
+
+        legend.innerHTML = yearData
+          .map(
+            (item) => `
+            <div class="legend-row">
+              <span class="legend-swatch" style="background:${item.color};"></span>
+              <div>
+                <strong>${item.year}</strong>
+                <span>${item.count} relatorios</span>
+              </div>
+              <div class="count">${pct(item.count, total)}</div>
+            </div>
+          `,
+          )
+          .join("");
+      }
+
+      function renderGauge() {
+        const value = 30;
+        const gauge = document.getElementById("maturity-gauge");
+        const radius = 84;
+        const circumference = 2 * Math.PI * radius;
+        const dashOffset = circumference * (1 - value / 100);
+
+        gauge.innerHTML = `
+          <svg viewBox="0 0 240 240" role="img" aria-label="Medidor de maturidade analitica">
+            <defs>
+              <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--forest)" />
+                <stop offset="50%" stop-color="var(--teal)" />
+                <stop offset="100%" stop-color="var(--gold)" />
+              </linearGradient>
+            </defs>
+            <circle cx="120" cy="120" r="${radius}" fill="none" stroke="rgba(20, 33, 38, 0.08)" stroke-width="18"></circle>
+            <circle cx="120" cy="120" r="${radius}" fill="none" stroke="url(#gauge-gradient)" stroke-width="18" stroke-linecap="round" transform="rotate(-90 120 120)" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"></circle>
+            <circle cx="120" cy="120" r="64" fill="rgba(255, 251, 244, 0.95)"></circle>
+            <text x="120" y="116" text-anchor="middle" class="gauge-center">30%</text>
+            <text x="120" y="145" text-anchor="middle" class="gauge-label">maturidade</text>
+          </svg>
+        `;
+      }
+
+      function renderTerritoryMap() {
+        const map = document.getElementById("geo-map");
+        const legend = document.getElementById("territory-legend");
+        const total = territoryData.reduce((sum, item) => sum + item.count, 0);
+        const shapes = [
+          {
+            name: "Norte",
+            count: 1,
+            note: "AP",
+            points: "160,58 300,46 352,95 325,160 196,148 148,102",
+            label: [225, 110],
+          },
+          {
+            name: "Nordeste",
+            count: 2,
+            note: "CE e PB",
+            points: "360,70 512,82 560,150 528,214 420,190 362,138",
+            label: [446, 136],
+          },
+          {
+            name: "Centro Oeste",
+            count: 0,
+            note: "sem registros",
+            points: "182,152 318,150 346,224 282,304 168,252",
+            label: [255, 225],
+          },
+          {
+            name: "Sudeste",
+            count: 4,
+            note: "MG e RJ",
+            points: "312,190 454,188 514,278 422,332 300,282",
+            label: [400, 256],
+          },
+          {
+            name: "Sul",
+            count: 15,
+            note: "PR, SC e RS",
+            points: "228,302 356,322 416,388 298,382 218,340",
+            label: [304, 344],
+          },
+        ];
+
+        map.innerHTML = `
+          <path d="M118 70 C160 42, 224 36, 278 50 C324 62, 374 52, 438 78 C494 100, 546 154, 538 222 C530 288, 488 334, 424 360 C354 388, 278 392, 214 370 C166 352, 124 318, 96 268 C70 224, 74 164, 98 126 C108 108, 110 86, 118 70 Z" fill="rgba(20, 33, 38, 0.04)" stroke="rgba(20, 33, 38, 0.14)" stroke-width="1.2"></path>
+          ${shapes
+            .map((region) => {
+              const share = region.count / total;
+              const fill = `rgba(18, 63, 56, ${0.16 + share * 0.55})`;
+              return `
+                <g class="map-region">
+                  <polygon points="${region.points}" fill="${fill}"></polygon>
+                  <text x="${region.label[0]}" y="${region.label[1]}" text-anchor="middle">${region.name}</text>
+                  <text x="${region.label[0]}" y="${region.label[1] + 18}" text-anchor="middle" fill="var(--muted)" font-size="11">${region.count} doc.</text>
+                </g>
+              `;
+            })
+            .join("")}
+          <text x="320" y="26" text-anchor="middle" fill="var(--muted)" font-size="12" font-weight="800" letter-spacing="0.08em">BRASIL - MACROREGIOES</text>
+        `;
+
+        legend.innerHTML = territoryData
+          .map(
+            (item) => `
+              <div class="region-card">
+                <div class="topline">
+                  <strong>${item.name}</strong>
+                  <em>${item.count} relatórios</em>
+                </div>
+                <div class="region-bar"><i style="width:${pct(item.count, total)}"></i></div>
+                <em>${item.note}</em>
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      function renderSectorBars() {
+        const total = sectorBars.reduce((sum, item) => sum + item.count, 0);
+        const max = Math.max(...sectorBars.map((item) => item.count));
+        const el = document.getElementById("sector-bars");
+
+        el.innerHTML = sectorBars
+          .map(
+            (item) => `
+              <div class="bar-item">
+                <div>
+                  <div class="bar-name">${item.name}</div>
+                  <div class="detail">${item.note}</div>
+                </div>
+                <div class="bar-track">
+                  <i style="width:${(item.count / max) * 100}%;"></i>
+                </div>
+                <div class="bar-value">${item.count}</div>
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      const sectors = [
+        {
+          name: "Moda e confeccoes",
+          year: "2023 / 2025",
+          badge: "smart factory + circularidade",
+          summary:
+            "A moda concentra a transicao mais nítida entre digitalizacao de vendas, personalizacao e circularidade regenerativa.",
+          axis: "Eixo dominante",
+          axisItems: ["Smart factory", "Personalizacao em massa", "Futures literacy", "Sustentabilidade"],
+          solutions: "Solucoes centrais",
+          solutionItems: ["Prototipagem digital", "3D", "VR/RA", "Chatbots", "Upcycling"],
+          priority: "Prioridades",
+          priorityItems: ["Prototipagem digital", "Expansao dos canais de venda", "Praticas sustentaveis"],
+        },
+        {
+          name: "Economia do mar",
+          year: "2023",
+          badge: "azul + agua + governanca",
+          summary:
+            "A economia do mar amarra sustentabilidade, literacia oceanica e tecnologia limpa para um territorio maritimo mais robusto.",
+          axis: "Eixo dominante",
+          axisItems: ["Economia azul", "Qualidade da agua", "Governanca territorial", "Inovacao marinha"],
+          solutions: "Solucoes centrais",
+          solutionItems: ["P&D ambiental", "Tratamento de agua", "BlueTech", "Disseminacao de boas praticas"],
+          priority: "Prioridades",
+          priorityItems: ["Tratamento de agua", "BlueTech", "P&D para educacao ambiental"],
+        },
+        {
+          name: "Mobiliario",
+          year: "2023",
+          badge: "logistica + design + futuro",
+          summary:
+            "O mobiliario combina cadeia de suprimentos, melhoria de processo e uma leitura de futuro aplicada ao territorio.",
+          axis: "Eixo dominante",
+          axisItems: ["Cadeia de suprimentos", "Processo", "Produto", "Sustentabilidade"],
+          solutions: "Solucoes centrais",
+          solutionItems: ["Gestao logistica", "Parcerias estrategicas", "Design do produto", "Formacao de futuro"],
+          priority: "Prioridades",
+          priorityItems: ["Cadeia de suprimentos", "Processo produtivo", "Sustentabilidade"],
+        },
+        {
+          name: "Construcao civil",
+          year: "2025",
+          badge: "descarbonizacao + BIM",
+          summary:
+            "A construcao civil e a familia mais madura em termos de matriz estrategica com foco em circularidade e produtividade.",
+          axis: "Eixo dominante",
+          axisItems: ["Descarbonizacao", "Digitalizacao", "Materiais sustentaveis", "Industrializacao modular"],
+          solutions: "Solucoes centrais",
+          solutionItems: ["BIM", "Digital twins", "Reuso de residuos", "Eficiencia energetica"],
+          priority: "Prioridades",
+          priorityItems: ["Produtividade", "Inovacao circular", "Politicas publicas"],
+        },
+      ];
+
+      const tabs = document.getElementById("sector-tabs");
+      const hero = document.getElementById("sector-hero");
+      let active = 0;
+
+      function renderHero(index) {
+        const s = sectors[index];
+        hero.innerHTML = `
+          <div class="sector-hero-top">
+            <div>
+              <h3>${s.name}</h3>
+              <div class="meta">${s.year} · ${s.summary}</div>
+            </div>
+            <div class="sector-badge">${s.badge}</div>
+          </div>
+          <div class="sector-grid">
+            <div class="mini">
+              <span class="mini-label">${s.axis}</span>
+              <ul>${s.axisItems.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+            <div class="mini">
+              <span class="mini-label">${s.solutions}</span>
+              <ul>${s.solutionItems.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+            <div class="mini">
+              <span class="mini-label">${s.priority}</span>
+              <ul>${s.priorityItems.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+          </div>
+        `;
+
+        [...tabs.querySelectorAll("button")].forEach((btn, i) => {
+          btn.setAttribute("aria-pressed", String(i === index));
+        });
+      }
+
+      sectors.forEach((sector, index) => {
+        const btn = document.createElement("button");
+        btn.className = "sector-btn";
+        btn.type = "button";
+        btn.textContent = sector.name;
+        btn.setAttribute("aria-pressed", String(index === active));
+        btn.addEventListener("click", () => {
+          active = index;
+          renderHero(index);
+        });
+        tabs.appendChild(btn);
+      });
+
+      renderYearDonut();
+      renderGauge();
+      renderTerritoryMap();
+      renderSectorBars();
+      renderHero(active);
+    </script>
+  </body>
+</html>
