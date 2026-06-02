@@ -155,7 +155,7 @@ Perguntas que surgiram durante as sessoes e ainda nao tiveram resposta documenta
 
 ---
 
-## Secao 6 — Implantacao de skills (Fase 1 concluida 2026-06-02)
+## Secao 6 — Implantacao de skills (Fase 1 concluida 2026-06-02, Fase 1.5 iniciada)
 
 Skills criadas na categoria `cosmobrasil` (locais, ~/.hermes/skills/cosmobrasil/):
 
@@ -164,6 +164,7 @@ Skills criadas na categoria `cosmobrasil` (locais, ~/.hermes/skills/cosmobrasil/
 | `cosmobrasil-ingest-fonte` | Workflow de ingestao de fontes seguindo processo-ingestao.md | S3, S5, S6, A2, A13 |
 | `cosmobrasil-consulta-agente` | Padrao de resposta seguindo contrato-resposta-agente.md | S9, S11 |
 | `cosmobrasil-criar-matriz-tecnologica` | Gerador de matrizes setoriais padronizadas | A1, A3, S7, S8 |
+| `cosmobrasil-pesquisa-web` | Workflow robusto de busca web com cascata de mecanismos (Brave > DDG > Bing > Scholar > Wikipedia > Wayback), documentacao obrigatoria de tentativas e lacunas tecnicas | Busca de evidencia publica externa |
 
 **Próximas skills previstas** (Fase 2+):
 - `cosmobrasil-ficha-ator` (A4, L14)
@@ -177,12 +178,33 @@ Skills criadas na categoria `cosmobrasil` (locais, ~/.hermes/skills/cosmobrasil/
 
 ---
 
+## Secao 7 — Registro de buscas web
+
+| Data | Query | Mecanismo | Resultado | Lacuna gerada |
+|---|---|---|---|---|
+| 2026-06-02 | `"Emilio Beltrami" Cosmobrasil` | Brave, DDG, Bing | 0 resultados | L16 |
+| 2026-06-02 | `"Emilio Beltrami"` | Google Scholar | 17 resultados, todos homonimos sem relacao | L16 |
+| 2026-06-02 | `Emilio Beltrami COSMOB Italia` | DuckDuckGo | 0 resultados | L18 |
+| 2026-06-02 | `Emilio Beltrami Pesaro cosmob` | DuckDuckGo HTML | 0 resultados | L18 |
+| 2026-06-02 | `beltrami` | Site oficial cosmob.it/chi-siamo/ | 0 resultados | L18 |
+| 2026-06-02 | `Emilio Beltrami` | Wikipedia italiana (API) | Homonimo historico (prefeito Formigine 1968-1971) | — |
+| 2026-06-02 | `cosmob.it` | Wayback Machine 2024 | 0 resultados | L18 |
+| 2026-06-02 | N/A (LinkedIn) | LinkedIn | Nao executado (exige login) | L20 |
+
+**Lacunas tecnicas geradas:**
+- **LT-001:** Google.com bloqueado por anti-bot (IP datacenter)
+- **LT-002:** LinkedIn exige login autenticado (nao executado)
+- **LT-003:** PDF `Presentazione-Cosmob-2024.pdf` bloqueado pelo servidor (HTTP Forbidden)
+
+---
+
 ## Registro de versoes
 
 | Data | Autor | O que mudou |
 |---|---|---|
 | 2026-06-02 | Cosm | Versao inicial consolidando criticas e sugestoes da primeira sessao |
 | 2026-06-02 | Cosm | Secao 6 adicionada: 3 skills da Fase 1 implantadas (ingest-fonte, consulta-agente, criar-matriz-tecnologica) |
+| 2026-06-02 | Cosm | Secao 6 atualizada: skill cosmobrasil-pesquisa-web criada + Secao 7 com registro de buscas web e lacunas LT-001 a LT-003 |
 
 ## Uso futuro
 
