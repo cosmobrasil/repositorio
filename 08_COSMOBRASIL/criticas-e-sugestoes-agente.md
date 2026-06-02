@@ -190,11 +190,29 @@ Skills criadas na categoria `cosmobrasil` (locais, ~/.hermes/skills/cosmobrasil/
 | 2026-06-02 | `Emilio Beltrami` | Wikipedia italiana (API) | Homonimo historico (prefeito Formigine 1968-1971) | — |
 | 2026-06-02 | `cosmob.it` | Wayback Machine 2024 | 0 resultados | L18 |
 | 2026-06-02 | N/A (LinkedIn) | LinkedIn | Nao executado (exige login) | L20 |
+| 2026-06-02 | `"Emilio Beltrami"` | Google (agent-browser) | ✅ Entrevista Alumni Cattolica + 5 perfis LinkedIn + Instagram + YouTube + podcast SEBRAE-PB | L16 RESOLVIDA |
+| 2026-06-02 | `"Emilio Beltrami" UNIDO` | DuckDuckGo HTML, Bing, UNIDO.org | 0 resultados (DDG/Bing/UNIDO todos bloqueados anti-bot) | L18 parcialmente resolvida via Cattolica |
+| 2026-06-02 | `"Emilio Beltrami" SEBRAE` | DuckDuckGo HTML | 0 resultados (anti-bot) | — |
+| 2026-06-02 | `Emilio Beltrami UNIDO` | Google (agent-browser) | Bloqueado por CAPTCHA (IP datacenter) | LT-001 |
+| 2026-06-02 | `Emilio Beltrami` | YouTube search | ✅ 3 resultados: podcast CASACOR SEBRAE-PB (2024), video benchmarking leite (projeto Foresight), YouTube channel @emiliobeltrami576 | — |
+| 2026-06-02 | `Emilio Beltrami Cosmob` | YouTube search | ✅ 2 videos "Progetto Italia-Brasile" no canal Cosmob C. (~2015) | — |
+| 2026-06-02 | `"Emilio Beltrami"` | Wikipedia EN (API) | Homonimo: Emilio Beltrami Lopez-Linares, prefeito de Cadiz-ES (1969-1976) | — |
+| 2026-06-02 | `"Emilio Beltrami"` | Wikipedia IT (API) | Homonimo: Emilio Beltrami, prefeito de Formigine-IT (1968-1971) | — |
+| 2026-06-02 | `"Emilio Beltrami"` | Wikipedia PT (API) | 0 resultados | — |
 
 **Lacunas tecnicas geradas:**
 - **LT-001:** Google.com bloqueado por anti-bot (IP datacenter)
 - **LT-002:** LinkedIn exige login autenticado (nao executado)
 - **LT-003:** PDF `Presentazione-Cosmob-2024.pdf` bloqueado pelo servidor (HTTP Forbidden)
+- **LT-004:** DuckDuckGo JS bloqueado por CAPTCHA (anti-bot) em buscas via browser automatizado
+- **LT-005:** UNIDO.org bloqueado por Cloudflare challenge
+- **LT-006:** Bing bloqueado por Cloudflare challenge
+- **LT-007:** Startpage bloqueou conexao (anti-bot)
+
+**Lacunas L16/L18/L20 — Status:**
+- **L16 (Presenca publica Emilio Beltrami):** ✅ RESOLVIDA. Entrevista na Alumni Cattolica confirma identidade e trajetoria. Multiplos resultados em YouTube (podcast SEBRAE-PB, canal Cosmob, canal proprio). Presenca confirmada.
+- **L18 (Vinculo Emilio Beltrami ↔ COSMOB Italia):** ✅ PARCIALMENTE RESOLVIDA. Videos "Progetto Italia-Brasile" no canal YouTube da Cosmob confirmam projeto de cooperacao. Trajetoria documentada na Cattolica mostra ponte Italia-Brasil-SEBRAE desde 2002. Vinculo com COSMOB ainda nao confirmado diretamente (nome nao aparece em cosmob.it).
+- **L20 (LinkedIn inacessivel):** ❌ ABERTA. Google indica 5 perfis, mas LinkedIn exige login para acesso completo.
 
 ---
 
@@ -205,6 +223,7 @@ Skills criadas na categoria `cosmobrasil` (locais, ~/.hermes/skills/cosmobrasil/
 | 2026-06-02 | Cosm | Versao inicial consolidando criticas e sugestoes da primeira sessao |
 | 2026-06-02 | Cosm | Secao 6 adicionada: 3 skills da Fase 1 implantadas (ingest-fonte, consulta-agente, criar-matriz-tecnologica) |
 | 2026-06-02 | Cosm | Secao 6 atualizada: skill cosmobrasil-pesquisa-web criada + Secao 7 com registro de buscas web e lacunas LT-001 a LT-003 |
+| 2026-06-02 | Cosm | Secao 7 atualizada: pesquisa web Emilio Beltrami com agent-browser. L16 RESOLVIDA (identidade e trajetoria confirmadas via Alumni Cattolica + YouTube). L18 parcialmente resolvida. Novas lacunas LT-004 a LT-007 (anti-bot). Arquivo atores-cosmobrasil.md atualizado com perfil completo. |
 
 ## Uso futuro
 
